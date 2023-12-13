@@ -10,7 +10,9 @@ from sklearn.model_selection import train_test_split
 
 def get_zillow():
     '''
+    
     This function acquires zillow data from Codeup MySQL
+    
     '''
     filename = "zillow.csv"
 
@@ -31,7 +33,9 @@ def get_zillow():
 
 def prep_zillow(df):
     '''
-    this function prepares zillow data by changing column names, a few dtypes, dropping nulls, and houses with 0 bedrooms and 0 bathrooms.
+    
+    prepares zillow data by changing column names, a few dtypes, dropping nulls, and houses with 0 bedrooms and 0 bathrooms.
+    
     '''
     column_name_changes = {'bedroomcnt': 'bedrooms', 'bathroomcnt': 'bathrooms', 'calculatedfinishedsquarefeet': 
                        'sqft', 'taxvaluedollarcnt': 'appraisal', 'yearbuilt': 'year built', 'taxamount': 'taxes',
@@ -45,6 +49,8 @@ def prep_zillow(df):
     df.bedrooms = df.bedrooms.astype(int)
     df.county = df.county.astype(object)
     
+    df.county=df.county.map({6037: 'LA', 6059: 'Orange', 6111: 'Ventura'})
+    
     df = df[(df['bedrooms'] != 0) & (df['bathrooms'] != 0)]
     
     return df
@@ -53,6 +59,8 @@ def prep_zillow(df):
 
 def split_data(df):
     '''
+    
+    Splits df into train, validate, & split (60, 20, 20 split)
    
     '''
     train, validate_test = train_test_split(df,
@@ -69,6 +77,12 @@ def split_data(df):
     return train, validate, test
 
 def wrangle_function():
+    '''
+    
+    Combines acquire, prepare, and split functions into one callable function.
+    
+    '''
+    
     train, validate, test=split_data(prep_zillow(get_zillow()))
     
     return train, validate, test
